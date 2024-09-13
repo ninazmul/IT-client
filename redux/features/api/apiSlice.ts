@@ -30,7 +30,7 @@ export const apiSlice = createApi({
             })
           );
         } catch (error: any) {
-          console.error("Failed to load user:", error);
+          console.log(error);
         }
       },
     }),
