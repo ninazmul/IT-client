@@ -49,16 +49,7 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
 
   useEffect(() => {
-    const handleConnection = () => {
-      // Handle socket connection event here
-    };
-
-    socket.on("connection", handleConnection);
-
-    // Cleanup function to handle unmounting
-    return () => {
-      socket.off("connection", handleConnection);
-    };
+    socket.on("connection", () => {});
   }, []);
 
   return <>{isLoading ? <Loader /> : <>{children}</>}</>;
