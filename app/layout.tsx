@@ -1,5 +1,3 @@
-"use client";
-
 import "./globals.css";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme-provider";
@@ -28,7 +26,7 @@ const josefin = Josefin_Sans({
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${poppins.variable} ${josefin.variable} bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-[#0d0141] dark:to-[#0d0523] duration-300 min-h-screen`}
       >
@@ -50,6 +48,10 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     socket.on("connection", () => {});
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.off("connection");
+    };
   }, []);
 
   return <>{isLoading ? <Loader /> : <>{children}</>}</>;
