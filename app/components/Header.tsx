@@ -153,7 +153,7 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
                 onClick={() => setOpen(true)}
               />
               <p className="text-[16px] px-2 pl-5 text-black dark:text-white mt-5">
-                &copy; {new Date().getFullYear()} Your Company Name. All rights
+                &copy; {new Date().getFullYear()} IT Training BD. All rights
                 reserved.
               </p>
             </div>
