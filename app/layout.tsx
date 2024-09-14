@@ -45,32 +45,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-import { useSession } from "next-auth/react";
-
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: session, status } = useSession(); // Get session status from next-auth
-  const { isLoading, data: userData } = useLoadUserQuery({}, { skip: !session });
+  const { data, isLoading, error } = useLoadUserQuery({}, { skip: false }); // Skip set to false to trigger load.
 
-  // Only initiate the `useLoadUserQuery` if the session exists (i.e., the user is logged in)
   useEffect(() => {
-    if (session) {
-      socket.on("connection", () => {});
-      return () => {
-        socket.off("connection");
-      };
-    }
-  }, [session]);
+    socket.on("connection", () => {});
+    return () => {
+      socket.off("connection");
+    };
+  }, []);
 
-  if (status === "loading" || isLoading) {
-    // Show a loading spinner if session or user data is being fetched
+  if (isLoading) {
     return <Loader />;
   }
 
-  if (!session) {
-    // If there's no session, the user is not logged in yet
-    return <p>Please log in to continue.</p>;
+  // Handle if no user data is returned or an error occurs.
+  if (!data || error) {
+    return <>{children}</>; // Proceed with rendering children even if user data fails to load.
   }
 
   return <>{children}</>;
 };
-
