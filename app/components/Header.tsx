@@ -29,51 +29,51 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
-  // const { user } = useSelector((state: any) => state.auth);
   const {
     data: userData,
     isLoading,
     refetch,
   } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
-  const { data } = useSession();
-  const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+  const { data: sessionData } = useSession();
+  const [socialAuth, { isSuccess }] = useSocialAuthMutation();
   const [logout, setLogout] = useState(false);
-  const {} = useLogoutQuery(undefined, {
-    skip: !logout ? true : false,
-  });
+
+  // Lazy logout query
+  const {} = useLogoutQuery(undefined, { skip: !logout });
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!userData) {
-        if (data) {
-          socialAuth({
-            email: data?.user?.email,
-            name: data?.user?.name,
-            avatar: data?.user?.image,
-          });
-          refetch();
-        }
-      }
-      if (data === null) {
-        if (isSuccess) {
-          toast.success("Login successfully");
-        }
-      }
-      if (data === null && !isLoading && !userData) {
-        setLogout(true);
-      }
+    if (!isLoading && !userData && sessionData) {
+      socialAuth({
+        email: sessionData?.user?.email,
+        name: sessionData?.user?.name,
+        avatar: sessionData?.user?.image,
+      });
+      refetch();
     }
-  }, [data, userData, isLoading]);
 
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
+    if (sessionData === null && !isLoading && !userData) {
+      setLogout(true);
+    }
+
+    if (isSuccess) {
+      toast.success("Login successfully");
+    }
+  }, [sessionData, userData, isLoading, socialAuth, refetch, isSuccess]);
+
+  useEffect(() => {
+    const handleScroll = () => {
       if (window.scrollY > 80) {
         setActive(true);
       } else {
         setActive(false);
       }
-    });
-  }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleClose = (e: any) => {
     if (e.target.id === "screen") {
@@ -98,7 +98,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
             >
               <Image
                 src={logo}
-                alt=""
+                alt="Logo"
                 width={100}
                 height={100}
                 className="w-8 h-8"

@@ -11,8 +11,13 @@ import Loader from "./components/Loader/Loader";
 import { useEffect } from "react";
 import socketIO, { Socket } from "socket.io-client";
 
-const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
-const socket: Socket = socketIO(ENDPOINT, { transports: ["websocket"] });
+// Ensure the WebSocket URL is provided via environment variables
+const ENDPOINT =
+  process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "http://localhost:3000";
+const socket: Socket = socketIO(ENDPOINT, {
+  transports: ["websocket", "polling"],
+  withCredentials: true,
+});
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -49,9 +54,25 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery(undefined, {});
 
   useEffect(() => {
-    socket.on("connection", () => {});
+    // Handling socket connection
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from WebSocket server");
+    });
+
+    // Handle incoming notifications or events
+    socket.on("newNotification", (data) => {
+      console.log("New notification:", data);
+    });
+
+    // Clean up WebSocket connection on component unmount
     return () => {
-      socket.off("connection");
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("newNotification");
     };
   }, []);
 
