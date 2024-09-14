@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -27,31 +29,29 @@ const schema = Yup.object().shape({
 
 const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
   const [show, setShow] = useState(false);
-  const [login, { isSuccess, error, data }] = useLoginMutation();
+  const [login, { isSuccess, error }] = useLoginMutation();
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
-      try {
-        await login({ email, password });
-      } catch (err) {
-        console.error("Login error:", err);
-      }
+      await login({ email, password });
     },
   });
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Login successful");
-      setOpen(false); // Close modal
-      refetch(); // Refetch user data
+      toast.success("Login successfully");
+      setOpen(false);
+      refetch();
     }
     if (error) {
-      const errorMessage = (error as any)?.data?.message || "Login failed";
-      toast.error(errorMessage);
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      }
     }
-  }, [isSuccess, error, setOpen, refetch]);
+  }, [isSuccess, error, setOpen]);
 
   const { errors, touched, values, handleChange, handleSubmit } = formik;
 
