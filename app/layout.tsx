@@ -6,10 +6,10 @@ import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
 import { SessionProvider } from "next-auth/react";
-import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "./components/Loader/Loader";
 import { useEffect } from "react";
 import socketIO, { Socket } from "socket.io-client";
+import { useGetAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
 const socket: Socket = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isLoading } = useLoadUserQuery({});
+  const { isLoading } = useGetAllCoursesQuery({});
 
   useEffect(() => {
     socket.on("connection", () => {});
