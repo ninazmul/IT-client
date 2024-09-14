@@ -95,7 +95,7 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
           <div className="flex items-center justify-between p-3 h-[80px]">
             <Link
               href="/"
-              className="flex items-center gap-2 text-[25px] font-Poopins font-[500] text-black dark:text-white"
+              className="flex items-center gap-2 text-xl md:text-[25px] font-Poopins font-[500] text-black dark:text-white"
             >
               <Image
                 src={logo}
@@ -139,27 +139,27 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
             </div>
           </div>
         </div>
-        {openSidebar && (
-          <div
-            className="fixed top-0 left-0 h-screen z-[80] dark:bg-[unset] bg-[#00000024]"
-            onClick={handleCloseSidebar}
-            id="screen"
-          >
-            <div className="fixed z-[9999999999] w-[69%] h-screen top-0 right-0 bg-white dark:bg-gradient-to-b dark:from-[#0d0141] dark:to-[#0d0523] dark:bg-opacity-90">
-              <NavItems activeItem={activeItem} isMobile={true} />
-              <HiOutlineUserCircle
-                size={25}
-                className="cursor-pointer dark:text-white text-black ml-5 my-2"
-                onClick={() => setOpen(true)}
-              />
-              <p className="text-[16px] px-2 pl-5 text-black dark:text-white mt-5">
-                &copy; {new Date().getFullYear()} IT Training BD. All rights
-                reserved.
-              </p>
-            </div>
-          </div>
-        )}
       </div>
+      {openSidebar && (
+        <div
+          className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
+          onClick={handleCloseSidebar}
+          id="screen"
+        >
+          <div className="fixed z-[9999999999] w-[69%] h-screen top-0 right-0 bg-white dark:bg-gradient-to-b dark:from-[#0d0141] dark:to-[#0d0523] dark:bg-opacity-90">
+            <NavItems activeItem={activeItem} isMobile={true} />
+            <HiOutlineUserCircle
+              size={25}
+              className="cursor-pointer dark:text-white text-black ml-5 my-2"
+              onClick={() => setOpen(true)}
+            />
+            <p className="text-[16px] px-2 pl-5 text-black dark:text-white mt-5">
+              &copy; {new Date().getFullYear()} IT Training BD. All rights
+              reserved.
+            </p>
+          </div>
+        </div>
+      )}
       {open && (
         <CustomModal
           open={open}
