@@ -31,6 +31,7 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [hasShownToast, setHasShownToast] = useState(false); // New state to prevent infinite toasts
   const {
     data: userData,
     isLoading,
@@ -69,10 +70,19 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
       }
     }
 
-    if (isSuccess) {
+    if (isSuccess && !hasShownToast) {
       toast.success("Login successful");
+      setHasShownToast(true); // Prevent the toast from showing again
     }
-  }, [sessionData, userData, isLoading, isSuccess, refetch, socialAuth]);
+  }, [
+    sessionData,
+    userData,
+    isLoading,
+    isSuccess,
+    refetch,
+    socialAuth,
+    hasShownToast,
+  ]);
 
   const handleCloseSidebar = (e: React.MouseEvent) => {
     if (e.currentTarget.id === "screen") {
