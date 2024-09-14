@@ -81,6 +81,8 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
     }
   };
 
+  console.log("user data", userData)
+
   return (
     <div className="w-full relative">
       <div
