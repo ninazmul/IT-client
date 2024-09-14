@@ -108,13 +108,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
             <div className="flex items-center">
               <NavItems activeItem={activeItem} isMobile={false} />
               <ThemeSwitcher />
-              <div className="800px:hidden">
-                <HiOutlineMenuAlt3
-                  size={25}
-                  className="cursor-pointer dark:text-white text-black"
-                  onClick={() => setOpenSidebar(true)}
-                />
-              </div>
               {userData ? (
                 <Link href="/profile">
                   <Image
@@ -131,10 +124,17 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
               ) : (
                 <HiOutlineUserCircle
                   size={25}
-                  className="hidden 800px:block cursor-pointer dark:text-white text-black"
+                  className="cursor-pointer dark:text-white text-black"
                   onClick={() => setOpen(true)}
                 />
               )}
+              <div className="800px:hidden ml-4">
+                <HiOutlineMenuAlt3
+                  size={25}
+                  className="cursor-pointer dark:text-white text-black"
+                  onClick={() => setOpenSidebar(true)}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -147,26 +147,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
         >
           <div className="fixed z-[9999999999] w-[69%] h-screen top-0 right-0 bg-white dark:bg-gradient-to-b dark:from-[#0d0141] dark:to-[#0d0523] dark:bg-opacity-90">
             <NavItems activeItem={activeItem} isMobile={true} />
-            {userData ? (
-              <Link href="/profile">
-                <Image
-                  src={userData.data?.avatar?.url || Avatar}
-                  width={30}
-                  height={30}
-                  alt="User Avatar"
-                  className="w-[30px] h-[30px] object-cover rounded-full cursor-pointer"
-                  style={{
-                    border: activeItem === 5 ? "2px solid #ffd900" : "none",
-                  }}
-                />
-              </Link>
-            ) : (
-              <HiOutlineUserCircle
-                size={25}
-                className="hidden 800px:block cursor-pointer dark:text-white text-black"
-                onClick={() => setOpen(true)}
-              />
-            )}
             <p className="text-[16px] px-2 pl-5 text-black dark:text-white mt-5">
               &copy; {new Date().getFullYear()} IT Training BD. All rights
               reserved.
