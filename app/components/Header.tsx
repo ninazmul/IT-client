@@ -141,7 +141,7 @@ const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
         </div>
         {openSidebar && (
           <div
-            className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
+            className="fixed top-0 left-0 h-screen z-[80] dark:bg-[unset] bg-[#00000024]"
             onClick={handleCloseSidebar}
             id="screen"
           >
