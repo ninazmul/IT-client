@@ -1,39 +1,36 @@
 "use client";
-
 import "./globals.css";
-import { Poppins, Josefin_Sans } from "next/font/google";
-import { ThemeProvider } from "./utils/theme-provider";
+import { Poppins } from "next/font/google";
+import { Josefin_Sans } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import { Providers } from "./Provider";
 import { SessionProvider } from "next-auth/react";
+import React, { useEffect } from "react";
+import socketIO from "socket.io-client";
+import { Providers } from "./Provider";
+import { ThemeProvider } from "./utils/theme-provider";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "./components/Loader/Loader";
-import { useEffect } from "react";
-import socketIO, { Socket } from "socket.io-client";
-
-// Ensure the WebSocket URL is provided via environment variables
-const ENDPOINT =
-  process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "http://localhost:3000";
-const socket: Socket = socketIO(ENDPOINT, {
-  transports: ["websocket", "polling"],
-  withCredentials: true,
-});
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-Poppins",
 });
-
 const josefin = Josefin_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-Josefin",
 });
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${poppins.variable} ${josefin.variable} bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-[#0d0141] dark:to-[#0d0523] duration-300 min-h-screen`}
       >
@@ -51,30 +48,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isLoading } = useLoadUserQuery(undefined, {});
+  const { isLoading } = useLoadUserQuery({});
 
   useEffect(() => {
-    // Handling socket connection
-    socket.on("connect", () => {
-      console.log("Connected to WebSocket server");
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected from WebSocket server");
-    });
-
-    // Handle incoming notifications or events
-    socket.on("newNotification", (data) => {
-      console.log("New notification:", data);
-    });
-
-    // Clean up WebSocket connection on component unmount
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("newNotification");
-    };
+    socketId.on("connection", () => {});
   }, []);
 
-  return <>{isLoading ? <Loader /> : children}</>;
+  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
 };
