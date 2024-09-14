@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data, isLoading, error } = useLoadUserQuery({}, { skip: false }); // Skip set to false to trigger load.
+  const { isLoading } = useLoadUserQuery({});
 
   useEffect(() => {
     socket.on("connection", () => {});
@@ -55,14 +55,5 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     };
   }, []);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  // Handle if no user data is returned or an error occurs.
-  if (!data || error) {
-    return <>{children}</>; // Proceed with rendering children even if user data fails to load.
-  }
-
-  return <>{children}</>;
+  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
 };
