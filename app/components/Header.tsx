@@ -26,62 +26,61 @@ type Props = {
   setRoute: (route: string) => void;
 };
 
-const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
+const Header: FC<Props> = ({ activeItem, open, setOpen, route, setRoute }) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [hasShownToast, setHasShownToast] = useState(false);
   const {
     data: userData,
     isLoading,
     refetch,
-  } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
+  } = useLoadUserQuery(undefined, {});
   const { data: sessionData } = useSession();
   const [socialAuth, { isSuccess }] = useSocialAuthMutation();
   const [logout, setLogout] = useState(false);
 
-  // Lazy logout query
-  const {} = useLogoutQuery(undefined, { skip: !logout });
+  useLogoutQuery(undefined, { skip: !logout });
+
+  const handleScroll = useCallback(() => {
+    setActive(window.scrollY > 85);
+  }, []);
 
   useEffect(() => {
-    if (!isLoading && !userData && sessionData) {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  useEffect(() => {
+    if (sessionData && !userData && !isLoading) {
       socialAuth({
-        email: sessionData?.user?.email,
-        name: sessionData?.user?.name,
-        avatar: sessionData?.user?.image,
+        email: sessionData.user?.email,
+        name: sessionData.user?.name,
+        avatar: sessionData.user?.image,
       });
       refetch();
-    }
-
-    if (sessionData === null && !isLoading && !userData) {
+    } else if (!userData && sessionData === null) {
       setLogout(true);
     }
 
-    if (isSuccess) {
-      toast.success("Login successfully");
+    if (isSuccess && !hasShownToast) {
+      toast.success("Login successful!");
+      setHasShownToast(true);
     }
-  }, [sessionData, userData, isLoading, socialAuth, refetch, isSuccess]);
+  }, [
+    sessionData,
+    userData,
+    isLoading,
+    isSuccess,
+    refetch,
+    socialAuth,
+    hasShownToast,
+  ]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setActive(true);
-      } else {
-        setActive(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const handleClose = (e: any) => {
-    if (e.target.id === "screen") {
+  const handleClose = (e: React.MouseEvent) => {
+    if (e.currentTarget.id === "screen") {
       setOpenSidebar(false);
     }
   };
-
-  console.log("user data", userData)
 
   return (
     <div className="w-full relative">
