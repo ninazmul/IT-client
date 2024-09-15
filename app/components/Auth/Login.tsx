@@ -47,15 +47,11 @@ const Login: FC<Props> = ({ setRoute, setOpen, refetch }) => {
     }
     if (error) {
       if ("data" in error) {
-        toast.error((error as any).data.message || "An error occurred");
-      } else if ("status" in error) {
-        toast.error(`Error: ${error.status}`);
-      } else {
-        toast.error("An unknown error occurred");
+        const errorData = error as any;
+        toast.error(errorData.data.message);
       }
     }
   }, [isSuccess, error]);
-
 
   const { errors, touched, values, handleChange, handleSubmit } = formik;
   
