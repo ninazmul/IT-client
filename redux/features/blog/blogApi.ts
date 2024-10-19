@@ -5,9 +5,9 @@ export const blogApi = apiSlice.injectEndpoints({
     // Query to fetch all blogs
     getAllBlogs: builder.query({
       query: () => ({
-        url: "all-blog",
+        url: "all-blogs",
         method: "GET",
-        credentials: "include" as const,
+        credentials: "include",
       }),
     }),
 
@@ -16,17 +16,17 @@ export const blogApi = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `blog/${id}`,
         method: "GET",
-        credentials: "include" as const,
+        credentials: "include",
       }),
     }),
 
     // Mutation to upload a new blog (admin only)
     uploadBlog: builder.mutation({
       query: (blogData) => ({
-        url: "upload-blog", // This gets appended to the base URL
+        url: "upload-blog",
         method: "POST",
         body: blogData,
-        credentials: "include" as const,
+        credentials: "include",
       }),
     }),
 
@@ -35,13 +35,13 @@ export const blogApi = apiSlice.injectEndpoints({
       query: (id) => ({
         url: `blog/${id}`,
         method: "DELETE",
-        credentials: "include" as const,
+        credentials: "include",
       }),
     }),
   }),
 });
 
-// Exporting hooks for the blog endpoints
+// Exporting hooks for using these endpoints
 export const {
   useGetAllBlogsQuery,
   useGetSingleBlogQuery,
